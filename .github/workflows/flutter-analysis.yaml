@@ -30,7 +30,8 @@ jobs:
 
       - name: Comment on PR for each issue
         run: |
-          IFS=$'\n' read -ra LINES < analyze_output.txt
+          CONTENT=$(cat analyze_output.txt)
+          IFS=$'\\n' read -ra LINES <<< "$CONTENT"
           for line in "${LINES[@]}"; do
             echo "Line:"
             echo "$line"
