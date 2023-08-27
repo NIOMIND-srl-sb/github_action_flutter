@@ -22,8 +22,7 @@ jobs:
         run: flutter pub get
 
       - name: Run Flutter Analyze
-        run: flutter analyze
-        continue-on-error: true
+        uses: zgosalvez/github-actions-analyze-dart@v2
 
       # - name: Run Flutter Analyze
       #   id: analyze
