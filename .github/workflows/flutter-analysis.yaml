@@ -49,7 +49,7 @@ jobs:
               echo "COMMENT: $COMMENT"
 
               URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments"
-              BODY="{\"body\": \"$COMMENT\", \"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"path\": \"$FILENAME\", \"start_line\": $LINE_NUMBER, \"start_side\": \"RIGHT\", \"line\": $LINE_NUMBER, \"side\": \"RIGHT\"}"
+              BODY="{\"body\": \"$COMMENT\", \"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"path\": \"$FILENAME\", \"line\": $LINE_NUMBER, \"side\": \"LEFT\", \"subject_type\": \"line\"}"
 
               echo "URL:"
               echo "$URL"
