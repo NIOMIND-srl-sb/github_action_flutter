@@ -27,12 +27,13 @@ jobs:
           OUTPUT=$(flutter analyze .) || true  # Use '|| true' to ensure the command doesn't fail
           echo "Flutter Analyze Output:"
           echo "$OUTPUT"
-          echo "analyze_output=$OUTPUT" >> $GITHUB_OUTPUT
+          echo "::set-output name=analyze_output::$OUTPUT"
+        #  echo "analyze_output=$OUTPUT" >> $GITHUB_OUTPUT
         # continue-on-error: true
 
       - name: Comment on PR for each issue
         run: |
-          IFS=$'\n' read -d '' -ra LINES <<< "${{ steps.analyze.outputs.analyze_output }}"
+          IFS=$'\n' read -ra LINES <<< "${{ steps.analyze.outputs.analyze_output }}"
           for line in "${LINES[@]}"; do
             if [[ $line == info* || $line == warning* || $line == error* ]]; then
               FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $1}')
