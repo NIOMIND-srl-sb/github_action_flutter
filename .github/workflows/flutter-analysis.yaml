@@ -24,9 +24,9 @@ jobs:
       - name: Run Flutter Analyze
         id: analyze
         run: |
-          OUTPUT=$(flutter analyze)
+          OUTPUT=$(flutter analyze) || true  # Use '|| true' to ensure the command doesn't fail
           echo "::set-output name=analyze_output::$OUTPUT"
-        continue-on-error: true
+        # continue-on-error: true
 
       - name: Comment on PR for each issue
         run: |
