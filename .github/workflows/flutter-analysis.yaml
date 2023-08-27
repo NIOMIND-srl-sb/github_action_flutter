@@ -27,7 +27,7 @@ jobs:
           OUTPUT=$(flutter analyze .) || true  # Use '|| true' to ensure the command doesn't fail
           echo "Flutter Analyze Output:"
           echo "$OUTPUT"
-          echo "::set-output name=analyze_output::$OUTPUT"
+          echo "analyze_output=$OUTPUT" >> $GITHUB_OUTPUT
         # continue-on-error: true
 
       - name: Comment on PR for each issue
