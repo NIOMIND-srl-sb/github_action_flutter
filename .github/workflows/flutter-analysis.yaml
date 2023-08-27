@@ -22,29 +22,32 @@ jobs:
         run: flutter pub get
 
       - name: Run Flutter Analyze
-        id: analyze
-        run: |
-          OUTPUT=$(flutter analyze) || true  # Use '|| true' to ensure the command doesn't fail
-          echo "Flutter Analyze Output:"
-          echo "$OUTPUT"
-          echo "::set-output name=analyze_output::$OUTPUT"
-        # continue-on-error: true
+        run: flutter analyze
 
-      - name: Comment on PR for each issue
-        run: |
-          IFS=$'\n' read -d '' -ra LINES <<< "${{ steps.analyze.outputs.analyze_output }}"
-          for line in "${LINES[@]}"; do
-            if [[ $line == info* || $line == warning* || $line == error* ]]; then
-              FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $1}')
-              LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $2}' | tr -d ':')
-              ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
-              
-              COMMENT="Flutter analyze issue:\n\`\`\`\n$ISSUE\n\`\`\`"
-              curl \
-                -X POST \
-                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                -H "Accept: application/vnd.github.v3+json" \
-                https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
-                -d "{\"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"event\": \"COMMENT\", \"body\": \"$COMMENT\", \"path\": \"$FILENAME\", \"position\": $LINE_NUMBER}"
-            fi
-          done
+      # - name: Run Flutter Analyze
+      #   id: analyze
+      #   run: |
+      #     OUTPUT=$(flutter analyze) || true  # Use '|| true' to ensure the command doesn't fail
+      #     echo "Flutter Analyze Output:"
+      #     echo "$OUTPUT"
+      #     echo "::set-output name=analyze_output::$OUTPUT"
+      #   # continue-on-error: true
+
+      # - name: Comment on PR for each issue
+      #   run: |
+      #     IFS=$'\n' read -d '' -ra LINES <<< "${{ steps.analyze.outputs.analyze_output }}"
+      #     for line in "${LINES[@]}"; do
+      #       if [[ $line == info* || $line == warning* || $line == error* ]]; then
+      #         FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $1}')
+      #         LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $2}' | tr -d ':')
+      #         ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
+
+      #         COMMENT="Flutter analyze issue:\n\`\`\`\n$ISSUE\n\`\`\`"
+      #         curl \
+      #           -X POST \
+      #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #           -H "Accept: application/vnd.github.v3+json" \
+      #           https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
+      #           -d "{\"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"event\": \"COMMENT\", \"body\": \"$COMMENT\", \"path\": \"$FILENAME\", \"position\": $LINE_NUMBER}"
+      #       fi
+      #     done
