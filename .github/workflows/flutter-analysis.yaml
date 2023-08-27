@@ -48,15 +48,15 @@ jobs:
               echo "ISSUE: $ISSUE"
               echo "COMMENT: $COMMENT"
 
-              URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repo }}/pulls/${{ github.event.pull_request.number }}/comments"
+              URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments"
               BODY="{\"body\": \"$COMMENT\", \"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"path\": \"$FILENAME\", \"start_line\": $LINE_NUMBER, \"start_side\": \"RIGHT\", \"line\": $LINE_NUMBER, \"side\": \"RIGHT\"}"
-              
+
               echo "URL:"
               echo "$URL"
-              
+
               echo "Body:"
               echo "$BODY"
-              
+
               curl -L \
                 -X POST \
                 -H "Accept: application/vnd.github+json" \
