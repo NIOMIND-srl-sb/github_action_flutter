@@ -30,8 +30,7 @@ jobs:
 
       - name: Comment on PR for each issue
         run: |
-          # Split the output using explicit newline characters
-          IFS=$'\\n' read -ra LINES <<< "${{ steps.analyze.outputs.analyze_output }}"
+          IFS=$'\n' read -ra LINES < analyze_output.txt
           for line in "${LINES[@]}"; do
             if [[ $line == info* || $line == warning* || $line == error* ]]; then
               FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $1}')
