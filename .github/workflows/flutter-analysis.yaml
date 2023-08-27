@@ -24,18 +24,19 @@ jobs:
       - name: Run Flutter Analyze
         id: analyze
         run: |
-          flutter analyze > analyze_output.txt
-          echo analyze_output.txt
+          OUTPUT=$(flutter analyze)
+          echo "::set-output name=analyze_output::$OUTPUT"
         continue-on-error: true
 
       - name: Comment on PR for each issue
         run: |
-          while IFS= read -r line; do
+          IFS=$'\n' read -d '' -ra LINES <<< "${{ steps.analyze.outputs.analyze_output }}"
+          for line in "${LINES[@]}"; do
             if [[ ! $line =~ "No issues found!" ]]; then
               FILENAME=$(echo "$line" | awk -F '•' '{print $2}' | awk '{print $1}')
               LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $2}' | awk '{print $2}' | tr -d ':')
               ISSUE=$(echo "$line" | awk -F '•' '{print $3}')
-              
+
               COMMENT="Flutter analyze issue:\n\`\`\`\n$ISSUE\n\`\`\`"
               curl \
                 -X POST \
@@ -44,4 +45,4 @@ jobs:
                 https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
                 -d "{\"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"event\": \"COMMENT\", \"body\": \"$COMMENT\", \"path\": \"$FILENAME\", \"position\": $LINE_NUMBER}"
             fi
-          done < analyze_output.txt
+          done
