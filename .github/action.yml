@@ -1,0 +1,9 @@
+name: "Flutter Analyze"
+description: "Run Flutter analyze on pull requests"
+branding:
+  icon: "check-circle"
+  color: "blue"
+
+runs:
+  using: docker
+  image: "Dockerfile"
