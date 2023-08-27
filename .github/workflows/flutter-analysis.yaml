@@ -25,6 +25,7 @@ jobs:
         id: analyze
         run: |
           flutter analyze . > analyze_output.txt || true  # Use '|| true' to ensure the command doesn't fail
+          echo "Flutter Analyze Output:"
           cat analyze_output.txt  # Print the output for debugging
 
       - name: Comment on PR for each issue
