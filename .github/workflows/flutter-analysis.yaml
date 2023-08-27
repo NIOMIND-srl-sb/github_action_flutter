@@ -24,7 +24,7 @@ jobs:
       - name: Run Flutter Analyze
         id: analyze
         run: |
-          flutter analyze > analyze_output.txt || true  # Use '|| true' to ensure the command doesn't fail
+          flutter analyze > analyze_output.txt
 
       - name: Comment on PR for each issue
         run: |
