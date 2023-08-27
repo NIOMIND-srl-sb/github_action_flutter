@@ -30,10 +30,7 @@ jobs:
 
       - name: Comment on PR for each issue
         run: |
-          CONTENT=$(cat analyze_output.txt)
-          echo "Content:"
-          echo "$CONTENT"
-          IFS=$'\\n' read -ra LINES <<< "$CONTENT"
+          mapfile -t LINES < <(awk 'BEGIN{RS="\\\\n"}; {print}' analyze_output.txt)
           for line in "${LINES[@]}"; do
             echo "Line:"
             echo "$line"
