@@ -38,7 +38,7 @@ jobs:
             echo "Line:"
             echo "$line"
             if [[ $line == *" info"* || $line == *" warning"* || $line == *" error"* ]]; then
-              FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $1}')
+              FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $1}' | awk '{$1=$1;print}')
               LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $2}')
               ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
               COMMENT="Flutter analyze issue:\n\`\`\`\n$line\n\`\`\`"
