@@ -41,8 +41,13 @@ jobs:
               FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $1}')
               LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $2}' | tr -d ':')
               ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
-              
               COMMENT="Flutter analyze issue:\n\`\`\`\n$ISSUE\n\`\`\`"
+
+              echo "FILENAME: $FILENAME"
+              echo "LINE_NUMBER: $LINE_NUMBER"
+              echo "ISSUE: $ISSUE"
+              echo "COMMENT: $COMMENT"
+
               curl \
                 -X POST \
                 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
