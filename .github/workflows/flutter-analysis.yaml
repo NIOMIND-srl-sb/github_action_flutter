@@ -41,7 +41,7 @@ jobs:
               FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $1}')
               LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $2}')
               ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
-              COMMENT="Flutter analyze issue:\n\`\`\`\n$ISSUE\n\`\`\`"
+              COMMENT="Flutter analyze issue:\n\`\`\`\n$line\n\`\`\`"
 
               echo "FILENAME: $FILENAME"
               echo "LINE_NUMBER: $LINE_NUMBER"
