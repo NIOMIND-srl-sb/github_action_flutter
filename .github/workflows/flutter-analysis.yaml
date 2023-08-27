@@ -1,0 +1,40 @@
+name: Flutter Analyze
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  analyze:
+    name: Run Flutter Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Flutter Analyze
+        id: flutter_analyze
+        run: |
+          OUTPUT=$(flutter analyze)
+          echo "$OUTPUT"
+          echo "::set-output name=flutter_analyze_output::$OUTPUT"
+        continue-on-error: true
+
+      - name: Comment on PR if duplicate found
+        if: ${{ !contains(steps.flutter_analyze.outputs.flutter_analyze_output, 'No issues found!') }}
+        run: |
+          FILE_AND_LINE=$(echo ${{ steps.flutter_analyze.outputs.flutter_analyze_output }} | cut -d ' • ' -f 3)
+          FILE=$(echo ${{ FILE_AND_LINE }} | cut -d ':' -f 1)
+          LINE=$(echo ${{ FILE_AND_LINE }} | cut -d ':' -f 2)
+          COMMENT="Duplicate widget sequence detected in $FILE on line $LINE"
+          PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST -d "{\"body\": \"$COMMENT\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments"
