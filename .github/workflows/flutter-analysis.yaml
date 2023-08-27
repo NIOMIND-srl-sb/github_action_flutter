@@ -32,6 +32,8 @@ jobs:
         run: |
           IFS=$'\n' read -ra LINES < analyze_output.txt
           for line in "${LINES[@]}"; do
+            echo "Line:"
+            echo "$line"
             if [[ $line == info* || $line == warning* || $line == error* ]]; then
               FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $1}')
               LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk '{print $2}' | tr -d ':')
