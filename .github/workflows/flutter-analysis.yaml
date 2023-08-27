@@ -25,6 +25,8 @@ jobs:
         id: analyze
         run: |
           flutter analyze > analyze_output.txt
+          echo analyze_output.txt
+        continue-on-error: true
 
       - name: Comment on PR for each issue
         run: |
