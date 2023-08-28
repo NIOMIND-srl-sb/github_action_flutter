@@ -1,3 +1,78 @@
+# name: Flutter Analyze
+
+# on:
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
+
+# jobs:
+#   analyze:
+#     name: Run Flutter Analyze
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Check out code
+#         uses: actions/checkout@v2.4.2
+
+#       - name: Set up Flutter
+#         uses: subosito/flutter-action@v2
+
+#       - name: Install dependencies
+#         run: flutter pub get
+
+#       - name: Check dart format
+#         run: dart format --output=none --set-exit-if-changed .
+
+#       - name: Run Flutter Analyze
+#         id: analyze
+#         run: |
+#           flutter analyze . > analyze_output.txt || true  # Use '|| true' to ensure the command doesn't fail
+#           echo "Flutter Analyze Output:"
+#           cat analyze_output.txt  # Print the output for debugging
+
+#       - name: Comment on PR for each issue
+#         run: |
+#           ISSUE_DETECTED=0
+#           while IFS= read -r line; do
+#             LINES+=("$line")
+#           done < <(awk 'BEGIN{RS="\\\\n"}; {print}' analyze_output.txt)
+
+#           for line in "${LINES[@]}"; do
+#             echo "Line:"
+#             echo "$line"
+#             if [[ $line == *" info"* || $line == *" warning"* || $line == *" error"* ]]; then
+#               ISSUE_DETECTED=1
+#               FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $1}' | awk '{$1=$1;print}')
+#               LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $2}')
+#               ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
+#               COMMENT="Flutter analyze issue:\n\`\`\`\n$line\n\`\`\`"
+
+#               echo "FILENAME: $FILENAME"
+#               echo "LINE_NUMBER: $LINE_NUMBER"
+#               echo "ISSUE: $ISSUE"
+#               echo "COMMENT: $COMMENT"
+
+#               URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments"
+#               BODY="{\"body\": \"$COMMENT\", \"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"path\": \"$FILENAME\", \"line\": $LINE_NUMBER, \"side\": \"RIGHT\"}"
+
+#               echo "URL:"
+#               echo "$URL"
+
+#               echo "Body:"
+#               echo "$BODY"
+
+#               curl -L \
+#                 -X POST \
+#                 -H "Accept: application/vnd.github+json" \
+#                 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#                 -H "X-GitHub-Api-Version: 2022-11-28" \
+#                 $URL \
+#                 -d "$BODY"
+#             fi
+#           done
+
+#           exit $ISSUE_DETECTED
 name: Flutter Analyze
 
 on:
@@ -15,58 +90,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2.4.2
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run Flutter Analyze
-        id: analyze
-        run: |
-          flutter analyze . > analyze_output.txt || true  # Use '|| true' to ensure the command doesn't fail
-          echo "Flutter Analyze Output:"
-          cat analyze_output.txt  # Print the output for debugging
-
-      - name: Comment on PR for each issue
-        run: |
-          ISSUE_DETECTED=0
-          while IFS= read -r line; do
-            LINES+=("$line")
-          done < <(awk 'BEGIN{RS="\\\\n"}; {print}' analyze_output.txt)
-
-          for line in "${LINES[@]}"; do
-            echo "Line:"
-            echo "$line"
-            if [[ $line == *" info"* || $line == *" warning"* || $line == *" error"* ]]; then
-              ISSUE_DETECTED=1
-              FILENAME=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $1}' | awk '{$1=$1;print}')
-              LINE_NUMBER=$(echo "$line" | awk -F '•' '{print $3}' | awk -F ':' '{print $2}')
-              ISSUE=$(echo "$line" | awk -F '•' '{print $2}')
-              COMMENT="Flutter analyze issue:\n\`\`\`\n$line\n\`\`\`"
-
-              echo "FILENAME: $FILENAME"
-              echo "LINE_NUMBER: $LINE_NUMBER"
-              echo "ISSUE: $ISSUE"
-              echo "COMMENT: $COMMENT"
-
-              URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments"
-              BODY="{\"body\": \"$COMMENT\", \"commit_id\": \"${{ github.event.pull_request.head.sha }}\", \"path\": \"$FILENAME\", \"line\": $LINE_NUMBER, \"side\": \"RIGHT\"}"
-
-              echo "URL:"
-              echo "$URL"
-
-              echo "Body:"
-              echo "$BODY"
-
-              curl -L \
-                -X POST \
-                -H "Accept: application/vnd.github+json" \
-                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                $URL \
-                -d "$BODY"
-            fi
-          done
-
-          exit $ISSUE_DETECTED
+      # Using your public action
+      - name: Run Public Flutter Analyze Action
+        uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.13
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
