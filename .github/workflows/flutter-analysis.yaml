@@ -90,6 +90,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2.4.2
 
+      - name: Debug SHA values
+        run: |
+          echo "GITHUB_SHA: ${{ github.sha }}"
+          echo "PR Head SHA: ${{ github.event.pull_request.head.sha }}"
+
       - name: Dump GitHub event
         run: echo "${{ toJson(github.event) }}"
 
