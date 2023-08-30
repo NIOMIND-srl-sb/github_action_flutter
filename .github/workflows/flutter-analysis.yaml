@@ -90,14 +90,14 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2.4.2
 
-      - name: Debug SHA values
+      - name: SAVE COMMIT_ID values
         run: |
-          run: echo "COMMIT_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
-          echo "Using saved SHA: $COMMIT_SHA"
+          echo "COMMIT_ID=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+          echo "Using saved SHA: $COMMIT_ID"
 
       # Using your public action
       - name: Run Public Flutter Analyze Action
         uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.14
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commitId: $COMMIT_SHA
+          commitId: $COMMIT_ID
