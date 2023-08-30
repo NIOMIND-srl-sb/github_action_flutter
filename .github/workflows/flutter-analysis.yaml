@@ -90,8 +90,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2.4.2
 
-      # Using your public action
+      - name: Debug SHA values
+        run: |
+          echo "GITHUB_SHA: ${{ github.sha }}"
+          echo "PR Head SHA: ${{ github.event.pull_request.head.sha }}"
+
       - name: Run Public Flutter Analyze Action
-        uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.13
+        uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.19
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
