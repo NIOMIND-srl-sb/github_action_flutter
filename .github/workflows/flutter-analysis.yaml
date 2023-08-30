@@ -96,6 +96,6 @@ jobs:
           echo "PR Head SHA: ${{ github.event.pull_request.head.sha }}"
 
       - name: Run Public Flutter Analyze Action
-        uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.17
+        uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.18
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
