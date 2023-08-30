@@ -95,9 +95,6 @@ jobs:
           run: echo "COMMIT_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
           echo "Using saved SHA: $COMMIT_SHA"
 
-      - name: Dump GitHub event
-        run: echo "${{ toJson(github.event) }}"
-
       # Using your public action
       - name: Run Public Flutter Analyze Action
         uses: NIOMIND-srl-sb/flutter-analyze-action@v1.0.14
